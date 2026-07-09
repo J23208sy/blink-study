@@ -92,12 +92,6 @@
       pointer-events: none;
     }
 
-    /* RTLサポートのための調整 */
-    html[dir="rtl"] #menu-btn { left: auto; right: 20px; }
-    html[dir="rtl"] #app-title-label { left: auto; right: 74px; }
-    html[dir="rtl"] #menu-panel { left: auto; right: -360px; border-right: none; border-left: 1px solid var(--border); }
-    html[dir="rtl"] #menu-panel.open { left: auto; right: 0; }
-
     #menu-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,.5);
       z-index: 500; opacity: 0; pointer-events: none; transition: opacity .3s;
@@ -107,7 +101,7 @@
     #menu-panel {
       position: fixed; top: 0; left: -360px; bottom: 0; width: 340px;
       background: var(--surface); border-right: 1px solid var(--border);
-      z-index: 600; transition: left .35s cubic-bezier(.25,.8,.25,1), right .35s cubic-bezier(.25,.8,.25,1);
+      z-index: 600; transition: left .35s cubic-bezier(.25,.8,.25,1);
       display: flex; flex-direction: column; overflow-y: auto;
     }
     #menu-panel.open { left: 0; }
@@ -152,20 +146,6 @@
     .sens-btn.active { background: rgba(0,240,255,.1); border-color: var(--accent); color: var(--accent); }
 
     .sens-desc-txt { font-size: 11px; color: var(--text-dim); margin-top: 6px; font-family: var(--font-mono); }
-
-    /* ── Language selector ── */
-    .lang-select {
-      width: 100%; padding: 8px 10px;
-      background: var(--surface2); color: var(--text);
-      border: 1px solid var(--border2); border-radius: 6px;
-      font-family: var(--font-mono); font-size: 13px; cursor: pointer;
-      appearance: none; -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a7f99' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 10px center;
-      padding-right: 30px;
-    }
-    html[dir="rtl"] .lang-select { background-position: left 10px center; padding-right: 10px; padding-left: 30px; }
-    .lang-select:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
 
     /* ── EAR live monitor ── */
     .ear-monitor {
@@ -217,6 +197,33 @@
     }
     @keyframes pulse-eye { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:.9;transform:scale(1.05)} }
     .camera-idle p { font-size: 13px; color: var(--text-dim); font-family: var(--font-mono); }
+
+    .cam-start-btn {
+      margin-top: 4px; padding: 11px 30px;
+      font-family: var(--font-ui); font-size: 14px; font-weight: 700; letter-spacing: .05em;
+      border: 1px solid var(--accent); border-radius: 10px;
+      background: rgba(0,240,255,.08); color: var(--accent);
+      cursor: pointer; transition: all .2s;
+    }
+    .cam-start-btn:hover { background: rgba(0,240,255,.18); box-shadow: var(--glow-a); }
+    .cam-start-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    .camera-controls {
+      width: 100%; max-width: 760px; margin-top: 10px;
+    }
+    .cam-ctrl-btn {
+      width: 100%; padding: 11px;
+      font-family: var(--font-ui); font-size: 13px; font-weight: 600; letter-spacing: .03em;
+      border: 1px solid var(--border2); border-radius: 10px;
+      background: var(--surface2); color: var(--text-mid);
+      cursor: pointer; transition: all .2s;
+    }
+    .cam-ctrl-btn:hover { border-color: var(--accent); color: var(--text); box-shadow: var(--glow-a); }
+
+    .btn-key-hint {
+      font-family: var(--font-mono); font-size: 8px; color: var(--text-dim);
+      opacity: .7;
+    }
 
     /* ── カメラ内ステータスバー ── */
     .cam-status-bar {
@@ -316,7 +323,6 @@
       font-family: var(--font-mono); font-size: 10px; color: var(--accent);
       opacity: 0; transition: opacity .2s;
     }
-    html[dir="rtl"] .meas-timer { right: auto; left: 10px; }
     .meas-btn.measuring .meas-timer { opacity: 1; }
 
     /* ──────────────────── FINISH BTN ──────────────────── */
@@ -404,33 +410,33 @@
       color: var(--text-dim); text-transform: uppercase; margin-bottom: 14px; text-align: center;
     }
 
-    .compare-row {
+    .feedback-row {
       display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
+      padding: 12px 16px; background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 10px;
     }
-    .compare-row-label {
+    .feedback-row-label {
       font-family: var(--font-ui); font-size: 13px; font-weight: 600;
-      color: var(--text-mid); width: 100px; flex-shrink: 0; text-align: right;
+      color: var(--text-mid); width: 90px; flex-shrink: 0;
     }
-    html[dir="rtl"] .compare-row-label { text-align: left; }
-    .compare-bar-track {
-      flex: 1; height: 12px; background: var(--border); border-radius: 6px; overflow: visible; position: relative;
+    .feedback-pct {
+      width: 70px; flex-shrink: 0;
+      font-family: var(--font-head); font-size: 22px; letter-spacing: .04em;
     }
-    .compare-bar-fill {
-      height: 100%; width: 0%; border-radius: 6px;
-      transition: width 1.2s cubic-bezier(.25,.8,.25,1);
-      position: relative;
+    .feedback-pct.tier-low     { color: var(--danger); }
+    .feedback-pct.tier-mid     { color: var(--gold); }
+    .feedback-pct.tier-good    { color: var(--ok); }
+    .feedback-pct.tier-high    { color: var(--accent); }
+    .feedback-pct.tier-neutral { color: var(--text-dim); }
+    .feedback-msg {
+      flex: 1;
+      font-family: var(--font-ui); font-size: 14px; font-weight: 600;
     }
-    .compare-bar-fill.base { background: linear-gradient(90deg, var(--text-dim), var(--text-mid)); }
-    .compare-bar-fill.game1 { background: linear-gradient(90deg, var(--accent2), var(--accent)); }
-    .compare-bar-fill.game2 { background: linear-gradient(90deg, var(--ok), #00ffb0); }
-    .compare-pct {
-      width: 80px; flex-shrink: 0;
-      font-family: var(--font-head); font-size: 22px; letter-spacing: .04em; text-align: right;
-    }
-    html[dir="rtl"] .compare-pct { text-align: left; }
-    .compare-pct.up { color: var(--ok); }
-    .compare-pct.down { color: var(--danger); }
-    .compare-pct.neutral { color: var(--text-dim); }
+    .feedback-msg.tier-low     { color: var(--danger); }
+    .feedback-msg.tier-mid     { color: var(--gold); }
+    .feedback-msg.tier-good    { color: var(--ok); }
+    .feedback-msg.tier-high    { color: var(--accent); }
+    .feedback-msg.tier-neutral { color: var(--text-dim); }
 
     /* パーティクルキャンバス */
     #particle-canvas {
@@ -451,7 +457,7 @@
     #btn-home.reveal { transform: translateY(0); opacity: 1; transition: transform .5s .7s cubic-bezier(.34,1.56,.64,1), opacity .5s .7s; }
     #btn-home:hover { border-color: var(--accent); box-shadow: var(--glow-a); color: var(--accent); }
 
-    /* ── TOAST ── */
+    /* ──────────────────── TOAST ──────────────────── */
     #toast {
       position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
       background: var(--surface2); border: 1px solid var(--accent);
@@ -462,7 +468,7 @@
     }
     #toast.show { opacity: 1; }
 
-    /* ── MISC ── */
+    /* ──────────────────── MISC ──────────────────── */
     .divider {
       width: 100%; max-width: 760px; height: 1px;
       background: linear-gradient(90deg, transparent, var(--border), transparent);
@@ -476,83 +482,75 @@
     /* ── 縦長対応 ── */
     @media (max-width: 520px) {
       .result-cards { grid-template-columns: 1fr; max-width: 340px; }
-      .compare-row { flex-wrap: wrap; }
+      .feedback-row { flex-wrap: wrap; }
     }
   </style>
 </head>
 <body>
   <div class="scanlines"></div>
 
+  <!-- ── MENU BUTTON ── -->
   <button id="menu-btn" aria-label="メニュー">
     <span></span><span></span><span></span>
   </button>
   <div id="app-title-label">瞬き検出アプリ ver2.1</div>
 
+  <!-- ── MENU PANEL ── -->
   <div id="menu-overlay"></div>
   <aside id="menu-panel">
     <div class="menu-header">
       <h2>SETTINGS</h2>
-      <p data-i18n="menu_subtitle">// 瞬き検出パラメータ設定</p>
+      <p>// 瞬き検出パラメータ設定</p>
     </div>
 
+    <!-- 検出感度 -->
     <div class="menu-section">
-      <div class="menu-section-title" data-i18n="menu_sens_title">検出感度 (EAR しきい値)</div>
+      <div class="menu-section-title">検出感度 (EAR しきい値)</div>
       <div class="sens-btns" id="sens-btns">
-        <button class="sens-btn" data-ear="0.13" data-i18n="sens_low">低め</button>
-        <button class="sens-btn" data-ear="0.17" data-i18n="sens_mlow">やや低め</button>
-        <button class="sens-btn active" data-ear="0.20" data-i18n="sens_mid">標準</button>
-        <button class="sens-btn" data-ear="0.24" data-i18n="sens_mhigh">やや高め</button>
-        <button class="sens-btn" data-ear="0.28" data-i18n="sens_high">高め</button>
+        <button class="sens-btn" data-ear="0.13">低め</button>
+        <button class="sens-btn" data-ear="0.17">やや低め</button>
+        <button class="sens-btn" data-ear="0.20">標準</button>
+        <button class="sens-btn active" data-ear="0.24">やや高め</button>
+        <button class="sens-btn" data-ear="0.30">高め</button>
       </div>
-      <div class="sens-desc-txt" id="sens-desc" data-i18n="sens_desc_mid">標準 — 通常の瞬きで反応します</div>
+      <div class="sens-desc-txt" id="sens-desc">やや高め — 浅い瞬きでも反応しやすくなります</div>
 
+      <!-- EARスライダー -->
       <div class="setting-row" style="margin-top:14px">
-        <label data-i18n="menu_ear_thresh">EAR しきい値 <span class="val" id="ear-val-txt">0.20</span></label>
-        <input type="range" id="ear-slider" min="0.10" max="0.35" step="0.01" value="0.20">
+        <label>EAR しきい値 <span class="val" id="ear-val-txt">0.25</span></label>
+        <input type="range" id="ear-slider" min="0.10" max="0.35" step="0.01" value="0.25">
       </div>
 
+      <!-- EAR リアルタイムモニター -->
       <div class="ear-monitor">
-        <div class="ear-label" data-i18n="menu_ear_live">👁 EAR リアルタイム値</div>
+        <div class="ear-label">👁 EAR リアルタイム値</div>
         <div class="ear-bar-track">
           <div class="ear-bar-fill" id="ear-bar"></div>
         </div>
         <div class="ear-val-row">
-          <span data-i18n="ear_closed">0.10 (閉)</span>
-          <span id="ear-live-val" style="color:var(--text)" data-i18n="ear_measuring">— (計測中に表示)</span>
-          <span data-i18n="ear_open">0.40 (開)</span>
+          <span>0.10 (閉)</span>
+          <span id="ear-live-val" style="color:var(--text)">— (計測中に表示)</span>
+          <span>0.40 (開)</span>
         </div>
       </div>
     </div>
 
+    <!-- 最小フレーム数 -->
     <div class="menu-section">
-      <div class="menu-section-title" data-i18n="menu_other_title">その他の設定</div>
+      <div class="menu-section-title">その他の設定</div>
       <div class="setting-row">
-        <label data-i18n="menu_minframe">最小検出フレーム数 <span class="val" id="minframe-val">2</span></label>
+        <label>最小検出フレーム数 <span class="val" id="minframe-val">2</span></label>
         <input type="range" id="minframe-slider" min="1" max="5" step="1" value="2">
       </div>
-      <div data-i18n="menu_minframe_desc" style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);line-height:1.6">
+      <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);line-height:1.6">
         値が小さいほど素早い瞬きも検出しやすくなります。<br>ノイズが多い場合は増やしてください。
       </div>
     </div>
 
+    <!-- EARについての説明 -->
     <div class="menu-section">
-      <div class="menu-section-title" data-i18n="menu_lang_title">LANGUAGE</div>
-      <select class="lang-select" id="lang-select">
-        <option value="ja">🇯🇵 日本語</option>
-        <option value="en">🇺🇸 English</option>
-        <option value="zh">🇨🇳 中文（简体）</option>
-        <option value="ko">🇰🇷 한국어</option>
-        <option value="es">🇪🇸 Español</option>
-        <option value="fr">🇫🇷 Français</option>
-        <option value="de">🇩🇪 Deutsch</option>
-        <option value="pt">🇧🇷 Português</option>
-        <option value="ar">🇸🇦 العربية</option>
-      </select>
-    </div>
-
-    <div class="menu-section">
-      <div class="menu-section-title" data-i18n="menu_ear_title">EAR とは？</div>
-      <div data-i18n="menu_ear_body" style="font-size:12px;color:var(--text-dim);font-family:var(--font-mono);line-height:1.7">
+      <div class="menu-section-title">EAR とは？</div>
+      <div style="font-size:12px;color:var(--text-dim);font-family:var(--font-mono);line-height:1.7">
         Eye Aspect Ratio（目のアスペクト比）。<br>
         目の縦幅 ÷ 横幅 で算出。<br>
         瞬き時に急激に低下する数値を使って瞬きを検出します。<br><br>
@@ -562,7 +560,9 @@
     </div>
   </aside>
 
+  <!-- ── MAIN APP ── -->
   <div id="app">
+    <!-- カメラ -->
     <div class="camera-card" id="camera-card">
       <video id="video" autoplay playsinline muted style="display:none"></video>
       <canvas id="overlay"></canvas>
@@ -570,38 +570,48 @@
 
       <div class="camera-idle" id="camera-idle">
         <div class="eye-icon">👁️</div>
-        <p>// 開始ボタンを押してカメラを起動</p>
+        <p>// カメラを起動して顔を正面に向けてください</p>
+        <button id="btn-camera-start" class="cam-start-btn">▶ カメラを起動</button>
       </div>
 
       <div class="cam-status-bar">
         <div class="cam-dot" id="cam-dot"></div>
-        <span class="cam-status-txt" id="cam-status" data-i18n="cam_disconnected">カメラ未接続</span>
+        <span class="cam-status-txt" id="cam-status">カメラ未接続</span>
       </div>
     </div>
 
+    <!-- カメラ操作（起動中のみ表示） -->
+    <div class="camera-controls cam-active-only" id="camera-controls">
+      <button id="btn-eye-reset" class="cam-ctrl-btn">🔄 目の位置をリセット</button>
+    </div>
+
+    <!-- 計測ボタン -->
     <div class="measure-section">
-      <div class="measure-section-title" id="measure-section-title">// 計測フェーズ選択</div>
+      <div class="measure-section-title">// 計測フェーズ選択</div>
       <div class="measure-btns">
 
-        <button class="meas-btn" id="meas-btn-1" data-idx="0">
+        <!-- ボタン1: フェーズ1 -->
+        <button class="meas-btn" id="meas-btn-1" data-idx="0" disabled>
           <span class="meas-timer" id="timer-1">00:00</span>
-          <span class="btn-num-label" id="phase-lbl-1">フェーズ 1</span>
+          <span class="btn-num-label">フェーズ 1 <span class="btn-key-hint">[1]</span></span>
           <span class="btn-label" id="label-1">開始1</span>
           <span class="btn-result-val" id="result-1" style="display:none"></span>
           <span class="btn-result-unit" id="unit-1" style="display:none">回/分</span>
         </button>
 
-        <button class="meas-btn" id="meas-btn-2" data-idx="1">
+        <!-- ボタン2: フェーズ2 -->
+        <button class="meas-btn" id="meas-btn-2" data-idx="1" disabled>
           <span class="meas-timer" id="timer-2">00:00</span>
-          <span class="btn-num-label" id="phase-lbl-2">フェーズ 2</span>
+          <span class="btn-num-label">フェーズ 2 <span class="btn-key-hint">[2]</span></span>
           <span class="btn-label" id="label-2">開始2</span>
           <span class="btn-result-val" id="result-2" style="display:none"></span>
           <span class="btn-result-unit" id="unit-2" style="display:none">回/分</span>
         </button>
 
-        <button class="meas-btn" id="meas-btn-3" data-idx="2">
+        <!-- ボタン3: フェーズ3 -->
+        <button class="meas-btn" id="meas-btn-3" data-idx="2" disabled>
           <span class="meas-timer" id="timer-3">00:00</span>
-          <span class="btn-num-label" id="phase-lbl-3">フェーズ 3</span>
+          <span class="btn-num-label">フェーズ 3 <span class="btn-key-hint">[3]</span></span>
           <span class="btn-label" id="label-3">開始3</span>
           <span class="btn-result-val" id="result-3" style="display:none"></span>
           <span class="btn-result-unit" id="unit-3" style="display:none">回/分</span>
@@ -612,60 +622,50 @@
 
     <div class="divider"></div>
 
+    <!-- 結果へ進むボタン -->
     <div class="finish-area">
       <button id="btn-finish" disabled>▶ 結果を見る</button>
     </div>
   </div>
 
+  <!-- ── RESULT SCREEN ── -->
   <canvas id="particle-canvas"></canvas>
 
   <div id="result-screen">
-    <div class="result-badge" id="result-badge">MEASUREMENT COMPLETE</div>
+    <div class="result-badge">MEASUREMENT COMPLETE</div>
     <div class="result-title">RESULT</div>
 
     <div class="result-cards">
       <div class="result-card highlight" id="rc-base">
-        <div class="result-card-label" id="rc-lbl-base">説明中 (基準)</div>
+        <div class="result-card-label">フェーズ 1 (基準)</div>
         <div class="result-card-val" id="rv-base">—</div>
-        <div class="result-card-unit" id="rc-unit-1">回 / 分</div>
+        <div class="result-card-unit">回 / 分</div>
       </div>
       <div class="result-card" id="rc-g1">
-        <div class="result-card-label" id="rc-lbl-g1">ゲーム 1</div>
+        <div class="result-card-label">フェーズ 2</div>
         <div class="result-card-val" id="rv-g1">—</div>
-        <div class="result-card-unit" id="rc-unit-2">回 / 分</div>
+        <div class="result-card-unit">回 / 分</div>
       </div>
       <div class="result-card" id="rc-g2">
-        <div class="result-card-label" id="rc-lbl-g2">ゲーム 2</div>
+        <div class="result-card-label">フェーズ 3</div>
         <div class="result-card-val" id="rv-g2">—</div>
-        <div class="result-card-unit" id="rc-unit-3">回 / 分</div>
+        <div class="result-card-unit">回 / 分</div>
       </div>
     </div>
 
     <div class="compare-section" id="compare-section">
-      <div class="compare-title" id="compare-title">// 説明中との比較 (基準 = 100%)</div>
+      <div class="compare-title">// フェーズ 1 との比較 (基準 = 100%)</div>
 
-      <div class="compare-row">
-        <div class="compare-row-label" id="cmp-lbl-base">説明中</div>
-        <div class="compare-bar-track">
-          <div class="compare-bar-fill base" id="cbar-base" style="width:0%"></div>
-        </div>
-        <div class="compare-pct neutral" id="cpct-base">100%</div>
+      <div class="feedback-row" id="fb-row-g1">
+        <div class="feedback-row-label">フェーズ 2</div>
+        <div class="feedback-pct" id="fb-pct-g1">—</div>
+        <div class="feedback-msg" id="fb-msg-g1">—</div>
       </div>
 
-      <div class="compare-row">
-        <div class="compare-row-label" id="cmp-lbl-g1">ゲーム 1</div>
-        <div class="compare-bar-track">
-          <div class="compare-bar-fill game1" id="cbar-g1" style="width:0%"></div>
-        </div>
-        <div class="compare-pct" id="cpct-g1">—</div>
-      </div>
-
-      <div class="compare-row">
-        <div class="compare-row-label" id="cmp-lbl-g2">ゲーム 2</div>
-        <div class="compare-bar-track">
-          <div class="compare-bar-fill game2" id="cbar-g2" style="width:0%"></div>
-        </div>
-        <div class="compare-pct" id="cpct-g2">—</div>
+      <div class="feedback-row" id="fb-row-g2">
+        <div class="feedback-row-label">フェーズ 3</div>
+        <div class="feedback-pct" id="fb-pct-g2">—</div>
+        <div class="feedback-msg" id="fb-msg-g2">—</div>
       </div>
     </div>
 
@@ -675,637 +675,33 @@
   <div id="toast"></div>
 
   <script>
-  // ══════════════════════════════════════════════════════════════
-  //  i18n — 多言語対応データ（全9言語保持）
-  // ══════════════════════════════════════════════════════════════
-  const LANGS = {
-    ja: {
-      menu_subtitle:      '// 瞬き検出パラメータ設定',
-      menu_sens_title:    '検出感度 (EAR しきい値)',
-      sens_low:           '低め',
-      sens_mlow:          'やや低め',
-      sens_mid:           '標準',
-      sens_mhigh:         'やや高め',
-      sens_high:          '高め',
-      sens_desc_low:      '低め — まぶたの大きな動きのみに反応します',
-      sens_desc_mlow:     'やや低め — しっかり目を閉じた時に反応します',
-      sens_desc_mid:      '標準 — 通常の瞬きで反応します',
-      sens_desc_mhigh:    'やや高め — 浅い瞬きでも反応します',
-      sens_desc_high:     '高め — 少し目を細めただけでも反応します',
-      menu_ear_thresh:    'EAR しきい値',
-      menu_ear_live:      '👁 EAR リアルタイム値',
-      ear_closed:         '0.10 (閉)',
-      ear_measuring:      '— (計測中に表示)',
-      ear_open:           '0.40 (開)',
-      menu_other_title:   'その他の設定',
-      menu_minframe:      '最小検出フレーム数',
-      menu_minframe_desc: '値が小さいほど素早い瞬きも検出しやすくなります。<br>ノイズが多い場合は増やしてください。',
-      menu_lang_title:    'LANGUAGE',
-      menu_ear_title:     'EAR とは？',
-      menu_ear_body:      'Eye Aspect Ratio（目のアスペクト比）。<br>目の縦幅 ÷ 横幅 で算出。<br>瞬き時に急激に低下する数値を使って瞬きを検出します。<br><br>通常: 0.25〜0.35<br>閉じた: 0.10〜0.15',
-      phase_select:       '// 計測フェーズ選択',
-      phase_label:        'フェーズ',
-      start_btn:          '開始',
-      stop_btn:           '停止',
-      bpm_unit:           '回/分',
-      camera_idle:        '// 開始ボタンを押してカメラを起動',
-      cam_disconnected:   'カメラ未接続',
-      cam_connecting:     'カメラ接続中 — 正面を向いてください',
-      cam_no_face:        '顔未検出',
-      cam_detecting:      '顔検出中 ✓',
-      btn_finish:         '▶ 結果を見る',
-      result_badge:       'MEASUREMENT COMPLETE',
-      result_title:       'RESULT',
-      rc_base_label:      '説明中 (基準)',
-      rc_g1_label:        'ゲーム 1',
-      rc_g2_label:        'ゲーム 2',
-      rc_unit:            '回 / 分',
-      compare_title:      '// 説明中との比較 (基準 = 100%)',
-      cmp_base:           '説明中',
-      cmp_g1:             'ゲーム 1',
-      cmp_g2:             'ゲーム 2',
-      btn_home:           '🏠 ホームに戻る',
-      toast_phase_start:  'フェーズ {n} 計測開始',
-      toast_phase_done:   'フェーズ {n} 完了 — {v} 回/分',
-      toast_reset:        'リセット完了 — 次の計測を始めてください',
-      alert_camera:       'カメラへのアクセスが拒否されました。\nブラウザの設定でカメラ許可を有効にしてください。',
-      app_title:          '瞬き検出アプリ ver2.1',
-    },
-    en: {
-      menu_subtitle:      '// Blink Detection Parameters',
-      menu_sens_title:    'Sensitivity (EAR Threshold)',
-      sens_low:           'Low',
-      sens_mlow:          'Mid-Low',
-      sens_mid:           'Normal',
-      sens_mhigh:         'Mid-High',
-      sens_high:          'High',
-      sens_desc_low:      'Low — Reacts only to large eyelid movements',
-      sens_desc_mlow:     'Mid-Low — Reacts when eyes close firmly',
-      sens_desc_mid:      'Normal — Reacts to standard blinks',
-      sens_desc_mhigh:    'Mid-High — Reacts to shallow blinks',
-      sens_desc_high:     'High — Reacts to slight squinting',
-      menu_ear_thresh:    'EAR Threshold',
-      menu_ear_live:      '👁 EAR Live Value',
-      ear_closed:         '0.10 (closed)',
-      ear_measuring:      '— (shown while measuring)',
-      ear_open:           '0.40 (open)',
-      menu_other_title:   'Other Settings',
-      menu_minframe:      'Min Detection Frames',
-      menu_minframe_desc: 'Lower values detect faster blinks.<br>Increase to reduce noise.',
-      menu_lang_title:    'LANGUAGE',
-      menu_ear_title:     'What is EAR?',
-      menu_ear_body:      'Eye Aspect Ratio.<br>Calculated as vertical / horizontal eye width.<br>Blinks cause a sharp drop in this value.<br><br>Normal: 0.25–0.35<br>Closed: 0.10–0.15',
-      phase_select:       '// Select Measurement Phase',
-      phase_label:        'Phase',
-      start_btn:          'Start',
-      stop_btn:           'Stop',
-      bpm_unit:           'blinks/min',
-      camera_idle:        '// Click a phase button to start camera',
-      cam_disconnected:   'Camera Disconnected',
-      cam_connecting:     'Camera active — look forward',
-      cam_no_face:        'No face detected',
-      cam_detecting:      'Face detected ✓',
-      btn_finish:         '▶ View Results',
-      result_badge:       'MEASUREMENT COMPLETE',
-      result_title:       'RESULT',
-      rc_base_label:      'Listening (Base)',
-      rc_g1_label:        'Game 1',
-      rc_g2_label:        'Game 2',
-      rc_unit:            'blinks / min',
-      compare_title:      '// Comparison vs. Base (Base = 100%)',
-      cmp_base:           'Listening',
-      cmp_g1:             'Game 1',
-      cmp_g2:             'Game 2',
-      btn_home:           '🏠 Return Home',
-      toast_phase_start:  'Phase {n} started',
-      toast_phase_done:   'Phase {n} complete — {v} blinks/min',
-      toast_reset:        'Reset complete — ready for next session',
-      alert_camera:       'Camera access denied.\nPlease allow camera access in browser settings.',
-      app_title:          'Blink Tracker ver2.1',
-    },
-    zh: {
-      menu_subtitle:      '// 眨眼检测参数设置',
-      menu_sens_title:    '检测感度 (EAR 阈值)',
-      sens_low:           '偏低',
-      sens_mlow:          '稍低',
-      sens_mid:           '标准',
-      sens_mhigh:         '稍高',
-      sens_high:          '偏高',
-      sens_desc_low:      '偏低 — 仅对大幅度的眼睑动作做出反应',
-      sens_desc_mlow:     '稍低 — 紧闭双眼时做出反应',
-      sens_desc_mid:      '标准 — 对日常普通眨眼做出反应',
-      sens_desc_mhigh:    '稍高 — 即使轻微眨眼也能检测',
-      sens_desc_high:     '偏高 — 稍微眯眼即可触发检测',
-      menu_ear_thresh:    'EAR 阈值',
-      menu_ear_live:      '👁 EAR 实时数值',
-      ear_closed:         '0.10 (闭眼)',
-      ear_measuring:      '— (测量中显示)',
-      ear_open:           '0.40 (睁眼)',
-      menu_other_title:   '其他设置',
-      menu_minframe:      '最小检测帧数',
-      menu_minframe_desc: '数值越小，越容易检测快速眨眼。<br>如噪声过多请增大数值。',
-      menu_lang_title:    '语言',
-      menu_ear_title:     '什么是 EAR？',
-      menu_ear_body:      '眼睛纵横比。<br>计算方式：眼睛高度 ÷ 眼睛宽度。<br>眨眼时该值会急剧下降。<br><br>正常：0.25～0.35<br>闭合：0.10～0.15',
-      phase_select:       '// 选择测量阶段',
-      phase_label:        '阶段',
-      start_btn:          '开始',
-      stop_btn:           '停止',
-      bpm_unit:           '次/分',
-      camera_idle:        '// 按下开始按钮启动摄像头',
-      cam_disconnected:   '摄像头未连接',
-      cam_connecting:     '摄像头已连接 — 请面向摄像头',
-      cam_no_face:        '未检测到人脸',
-      cam_detecting:      '检测到人脸 ✓',
-      btn_finish:         '▶ 查看结果',
-      result_badge:       'MEASUREMENT COMPLETE',
-      result_title:       'RESULT',
-      rc_base_label:      '听讲中（基准）',
-      rc_g1_label:        '游戏 1',
-      rc_g2_label:        '游戏 2',
-      rc_unit:            '次 / 分',
-      compare_title:      '// 与基准对比（基准 = 100%）',
-      cmp_base:           '听讲中',
-      cmp_g1:             '游戏 1',
-      cmp_g2:             '游戏 2',
-      btn_home:           '🏠 返回首页',
-      toast_phase_start:  '阶段 {n} 开始',
-      toast_phase_done:   '阶段 {n} 完成 — {v} 次/分',
-      toast_reset:        '已重置 — 可开始下次测量',
-      alert_camera:       '摄像头访问被拒绝。\n请在浏览器设置中允许摄像头权限。',
-      app_title:          '眨眼检测 ver2.1',
-    },
-    ko: {
-      menu_subtitle:      '// 눈 깜박임 감지 파라미터 설정',
-      menu_sens_title:    '감도 (EAR 임계값)',
-      sens_low:           '낮음',
-      sens_mlow:          '약간 낮음',
-      sens_mid:           '표준',
-      sens_mhigh:         '약간 높음',
-      sens_high:          '높음',
-      sens_desc_low:      '낮음 — 눈꺼풀이 크게 움직일 때만 반응',
-      sens_desc_mlow:     '약간 낮음 — 눈을 꾹 감았을 때 반응',
-      sens_desc_mid:      '표준 — 일반적인 깜박임에 반응',
-      sens_desc_mhigh:    '약간 높음 — 얕은 깜박임에도 반응',
-      sens_desc_high:     '높음 — 눈을 살짝 찌푸리기만 해도 반응',
-      menu_ear_thresh:    'EAR 임계값',
-      menu_ear_live:      '👁 EAR 실시간 값',
-      ear_closed:         '0.10 (감음)',
-      ear_measuring:      '— (측정 중 표시)',
-      ear_open:           '0.40 (뜸)',
-      menu_other_title:   '기타 설정',
-      menu_minframe:      '최소 감지 프레임 수',
-      menu_minframe_desc: '값이 작을수록 빠른 깜박임을 잘 감지합니다.<br>노이즈가 많으면 값을 늘려주세요.',
-      menu_lang_title:    '언어 (LANGUAGE)',
-      menu_ear_title:     'EAR 이란?',
-      menu_ear_body:      'Eye Aspect Ratio (눈 가로세로 비율).<br>눈 세로폭 ÷ 가로폭으로 산출.<br>눈을 깜박일 때 급격히 떨어지는 수치를 이용해 감지합니다.<br><br>일반: 0.25~0.35<br>감았을 때: 0.10~0.15',
-      phase_select:       '// 측정 페이즈 선택',
-      phase_label:        '페이즈',
-      start_btn:          '시작',
-      stop_btn:           '정지',
-      bpm_unit:           '회/분',
-      camera_idle:        '// 시작 버튼을 눌러 카메라 구동',
-      cam_disconnected:   '카메라 미연결',
-      cam_connecting:     '카메라 연결 중 — 정면을 바라봐 주세요',
-      cam_no_face:        '얼굴 미감지',
-      cam_detecting:      '얼굴 감지 중 ✓',
-      btn_finish:         '▶ 결과 보기',
-      result_badge:       'MEASUREMENT COMPLETE',
-      result_title:       'RESULT',
-      rc_base_label:      '설명 청취 (기준)',
-      rc_g1_label:        '게임 1',
-      rc_g2_label:        '게임 2',
-      rc_unit:            '회 / 분',
-      compare_title:      '// 설명 청취 시점과의 비교 (기준 = 100%)',
-      cmp_base:           '설명 청취',
-      cmp_g1:             '게임 1',
-      cmp_g2:             '게임 2',
-      btn_home:           '🏠 홈으로 복귀',
-      toast_phase_start:  '페이즈 {n} 측정 시작',
-      toast_phase_done:   '페이즈 {n} 완료 — {v} 회/분',
-      toast_reset:        '리셋 완료 — 다음 측정을 시작해 주세요',
-      alert_camera:       '카메라 접근이 거부되었습니다.\n브라우저 설정에서 카메라 권한을 허용해 주세요.',
-      app_title:          '눈 깜박임 계측 ver2.1',
-    },
-    es: {
-      menu_subtitle:      '// Parámetros de detección de parpadeo',
-      menu_sens_title:    'Sensibilidad (Umbral EAR)',
-      sens_low:           'Baja',
-      sens_mlow:          'Med-Baja',
-      sens_mid:           'Normal',
-      sens_mhigh:         'Med-Alta',
-      sens_high:          'Alta',
-      sens_desc_low:      'Baja — Reacciona solo a movimientos grandes',
-      sens_desc_mlow:     'Med-Baja — Reacciona al cerrar firmemente',
-      sens_desc_mid:      'Normal — Reacciona al parpadeo normal',
-      sens_desc_mhigh:    'Med-Alta — Reacciona a parpadeos superficiales',
-      sens_desc_high:     'Alta — Reacciona al entrecerrar los ojos',
-      menu_ear_thresh:    'Umbral EAR',
-      menu_ear_live:      '👁 Valor EAR en vivo',
-      ear_closed:         '0.10 (cerrado)',
-      ear_measuring:      '— (se muestra al medir)',
-      ear_open:           '0.40 (abierto)',
-      menu_other_title:   'Otros ajustes',
-      menu_minframe:      'Fotogramas mínimos',
-      menu_minframe_desc: 'Valores más bajos detectan parpadeos rápidos.<br>Aumentar para reducir ruido.',
-      menu_lang_title:    'IDIOMA',
-      menu_ear_title:     '¿Qué es EAR?',
-      menu_ear_body:      'Eye Aspect Ratio (Relación de aspecto del ojo).<br>Calculado como alto ÷ ancho del ojo.<br>Cae bruscamente al parpadear.<br><br>Normal: 0.25–0.35<br>Cerrado: 0.10–0.15',
-      phase_select:       '// Seleccionar fase de medición',
-      phase_label:        'Fase',
-      start_btn:          'Iniciar',
-      stop_btn:           'Detener',
-      bpm_unit:           'parp/min',
-      camera_idle:        '// Presiona Iniciar para activar la cámara',
-      cam_disconnected:   'Cámara desconectada',
-      cam_connecting:     'Cámara activa — mira al frente',
-      cam_no_face:        'No se detecta cara',
-      cam_detecting:      'Cara detectada ✓',
-      btn_finish:         '▶ Ver resultados',
-      result_badge:       'MEASUREMENT COMPLETE',
-      result_title:       'RESULT',
-      rc_base_label:      'Escuchando (Base)',
-      rc_g1_label:        'Juego 1',
-      rc_g2_label:        'Juego 2',
-      rc_unit:            'parp / min',
-      compare_title:      '// Comparación vs. Base (Base = 100%)',
-      cmp_base:           'Escuchando',
-      cmp_g1:             'Juego 1',
-      cmp_g2:             'Juego 2',
-      btn_home:           '🏠 Voltar al inicio',
-      toast_phase_start:  'Fase {n} iniciada',
-      toast_phase_done:   'Fase {n} completada — {v} parp/min',
-      toast_reset:        'Reinicio completo — listo para nueva sesión',
-      alert_camera:       'Acceso a la cámara denegado.\nPor favor, permita el acceso en los ajustes.',
-      app_title:          'Detector de parpadeo ver2.1',
-    },
-    fr: {
-      menu_subtitle:      '// Paramètres de détection du clignement',
-      menu_sens_title:    'Sensibilité (Seuil EAR)',
-      sens_low:           'Faible',
-      sens_mlow:          'Assez faible',
-      sens_mid:           'Standard',
-      sens_mhigh:         'Assez élevée',
-      sens_high:          'Élevée',
-      sens_desc_low:      'Faible — Réagit uniquement aux grands mouvements des paupières',
-      sens_desc_mlow:     'Assez faible — Réagit lorsque les yeux se ferment fermement',
-      sens_desc_mid:      'Standard — Réagit aux clignements normaux',
-      sens_desc_mhigh:    'Assez élevée — Réagit même aux clignements superficiels',
-      sens_desc_high:     'Élevée — Réagit dès que l\'on plisse un peu les yeux',
-      menu_ear_thresh:    'Seuil EAR',
-      menu_ear_live:      '👁 Valeur EAR en temps réel',
-      ear_closed:         '0.10 (fermé)',
-      ear_measuring:      '— (affiché pendant la mesure)',
-      ear_open:           '0.40 (ouvert)',
-      menu_other_title:   'Autres paramètres',
-      menu_minframe:      'Nombre de frames min',
-      menu_minframe_desc: 'Des valeurs plus basses détectent les clignements rapides.<br>Augmentez si bruit important.',
-      menu_lang_title:    'LANGUE',
-      menu_ear_title:     'Qu\'est-ce que l\'EAR ?',
-      menu_ear_body:      'Eye Aspect Ratio (Ratio d\'aspect de l\'œil).<br>Calculé par hauteur ÷ largeur de l\'œil.<br>Chute brutalement lors du clignement.<br><br>Normal : 0.25–0.35<br>Fermé : 0.10–0.15',
-      phase_select:       '// Sélectionner la phase de mesure',
-      phase_label:        'Phase',
-      start_btn:          'Démarrer',
-      stop_btn:           'Arrêter',
-      bpm_unit:           'clign/min',
-      camera_idle:        '// Appuyez sur Démarrer pour activer la caméra',
-      cam_disconnected:   'Caméra déconnectée',
-      cam_connecting:     'Caméra active — regardez droit devant',
-      cam_no_face:        'Aucun visage détecté',
-      cam_detecting:      'Visage détecté ✓',
-      btn_finish:         '▶ Voir les résultats',
-      result_badge:       'MEASUREMENT COMPLETE',
-      result_title:       'RESULT',
-      rc_base_label:      'En écoute (Base)',
-      rc_g1_label:        'Jeu 1',
-      rc_g2_label:        'Jeu 2',
-      rc_unit:            'clign / min',
-      compare_title:      '// Comparaison vs. Base (Base = 100%)',
-      cmp_base:           'En écoute',
-      cmp_g1:             'Jeu 1',
-      cmp_g2:             'Jeu 2',
-      btn_home:           '🏠 Retour à l\'accueil',
-      toast_phase_start:  'Phase {n} démarrée',
-      toast_phase_done:   'Phase {n} terminée — {v} clign/min',
-      toast_reset:        'Réinitialisé — prêt pour la prochaine session',
-      alert_camera:       'Accès à la caméra refusé.\nVeuillez autoriser l\'accès dans les paramètres du navigateur.',
-      app_title:          'Détecteur de clignement ver2.1',
-    },
-    de: {
-      menu_subtitle:      '// Blinzelerkennung Parameter',
-      menu_sens_title:    'Empfindlichkeit (EAR-Schwellenwert)',
-      sens_low:           'Niedrig',
-      sens_mlow:          'Mittel-Nied.',
-      sens_mid:           'Standard',
-      sens_mhigh:         'Mittel-Hoch',
-      sens_high:          'Hoch',
-      sens_desc_low:      'Niedrig — Reagiert nur auf große Lideröffnungen',
-      sens_desc_mlow:     'Mittel-Niedrig — Reagiert beim festen Schließen',
-      sens_desc_mid:      'Standard — Reagiert auf normales Blinzeln',
-      sens_desc_mhigh:    'Mittel-Hoch — Reagiert auf flaches Blinzeln',
-      sens_desc_high:     'Hoch — Reagiert schon beim leichten Zusammenkneifen',
-      menu_ear_thresh:    'EAR-Schwellenwert',
-      menu_ear_live:      '👁 EAR Echtzeit-Wert',
-      ear_closed:         '0.10 (geschlossen)',
-      ear_measuring:      '— (während der Messung)',
-      ear_open:           '0.40 (offen)',
-      menu_other_title:   'Weitere Einstellungen',
-      menu_minframe:      'Min. Frameanzahl',
-      menu_minframe_desc: 'Kleinere Werte erkennen schnellere Blinzler.<br>Erhöhen, falls zu viel Rauschen.',
-      menu_lang_title:    'SPRACHE',
-      menu_ear_title:     'Was ist EAR?',
-      menu_ear_body:      'Eye Aspect Ratio (Augen-Seitenverhältnis).<br>Berechnet aus Augenhöhe ÷ Augenbreite.<br>Sinkt beim Blinzeln drastisch.<br><br>Normal: 0.25–0.35<br>Geschlossen: 0.10–0.15',
-      phase_select:       '// Messphase auswählen',
-      phase_label:        'Phase',
-      start_btn:          'Start',
-      stop_btn:           'Stop',
-      bpm_unit:           'Blinzeln/Min',
-      camera_idle:        '// Start drücken, um Kamera zu aktivieren',
-      cam_disconnected:   'Kamera nicht verbunden',
-      cam_connecting:     'Kamera aktiv — bitte nach vorne schauen',
-      cam_no_face:        'Kein Gesicht erkannt',
-      cam_detecting:      'Gesicht erkannt ✓',
-      btn_finish:         '▶ Ergebnisse anzeigen',
-      result_badge:       'MEASUREMENT COMPLETE',
-      result_title:       'RESULT',
-      rc_base_label:      'Zuhören (Basis)',
-      rc_g1_label:        'Spiel 1',
-      rc_g2_label:        'Spiel 2',
-      rc_unit:            'Blinzeln / Min',
-      compare_title:      '// Vergleich zur Basis (Basis = 100%)',
-      cmp_base:           'Zuhören',
-      cmp_g1:             'Spiel 1',
-      cmp_g2:             'Spiel 2',
-      btn_home:           '🏠 Zurück zur Startseite',
-      toast_phase_start:  'Phase {n} gestartet',
-      toast_phase_done:   'Phase {n} beendet — {v} Blinzeln/Min',
-      toast_reset:        'Zurückgesetzt — bereit für die nächste Session',
-      alert_camera:       'Kamerazugriff verweigert.\nBitte in den Browsereinstellungen erlauben.',
-      app_title:          'Blinzel-Tracker ver2.1',
-    },
-    pt: {
-      menu_subtitle:      '// Ajustes do detector de piscadas',
-      menu_sens_title:    'Sensibilidade (Limiar EAR)',
-      sens_low:           'Baixa',
-      sens_mlow:          'Méd-Baixa',
-      sens_mid:           'Normal',
-      sens_mhigh:         'Méd-Alta',
-      sens_high:          'Alta',
-      sens_desc_low:      'Baixa — Reage apenas a movimentos grandes',
-      sens_desc_mlow:     'Méd-Baixa — Reage ao fechar firmemente',
-      sens_desc_mid:      'Normal — Reage a piscadas normais',
-      sens_desc_mhigh:    'Méd-Alta — Reage a piscadas superficiais',
-      sens_desc_high:     'Alta — Reage ao cerrar levemente os olhos',
-      menu_ear_thresh:    'Limiar EAR',
-      menu_ear_live:      '👁 Valor EAR ao vivo',
-      ear_closed:         '0.10 (fechado)',
-      ear_measuring:      '— (exibido ao medir)',
-      ear_open:           '0.40 (aberto)',
-      menu_other_title:   'Outras configurações',
-      menu_minframe:      'Frames mínimos de detecção',
-      menu_minframe_desc: 'Valores menores detectam piscadas rápidas.<br>Aumente para reduzir ruído.',
-      menu_lang_title:    'IDIOMA',
-      menu_ear_title:     'O que é EAR?',
-      menu_ear_body:      'Eye Aspect Ratio (Razão de aspecto do olho).<br>Calculado como altura ÷ largura do olho.<br>Cai abruptamente ao piscar.<br><br>Normal: 0.25–0.35<br>Fechado: 0.10–0.15',
-      phase_select:       '// Selecionar fase de medição',
-      phase_label:        'Fase',
-      start_btn:          'Iniciar',
-      stop_btn:           'Parar',
-      bpm_unit:           'pisc/min',
-      camera_idle:        '// Pressione Iniciar para ativar a câmera',
-      cam_disconnected:   'Câmera desconectada',
-      cam_connecting:     'Câmera ativa — olhe para a frente',
-      cam_no_face:        'Nenhum rosto detectado',
-      cam_detecting:      'Rosto detectado ✓',
-      btn_finish:         '▶ Ver resultados',
-      result_badge:       'MEASUREMENT COMPLETE',
-      result_title:       'RESULT',
-      rc_base_label:      'Ouvindo (Base)',
-      rc_g1_label:        'Jogo 1',
-      rc_g2_label:        'Jogo 2',
-      rc_unit:            'pisc / min',
-      compare_title:      '// Comparação vs. Base (Base = 100%)',
-      cmp_base:           'Ouvindo',
-      cmp_g1:             'Jogo 1',
-      cmp_g2:             'Jogo 2',
-      btn_home:           '🏠 Voltar ao início',
-      toast_phase_start:  'Fase {n} iniciada',
-      toast_phase_done:   'Fase {n} concluída — {v} pisc/min',
-      toast_reset:        'Reiniciado — pronto para a próxima sessão',
-      alert_camera:       'Acesso à câmera negado.\nPor favor, permita o acesso nas configurações do navegador.',
-      app_title:          'Detector de Piscadas ver2.1',
-    },
-    ar: {
-      menu_subtitle:      '// إعدادات معلمة كشف الرمش',
-      menu_sens_title:    'حساسية الكشف (عتبة EAR)',
-      sens_low:           'منخفض',
-      sens_mlow:          'منخفض قليلاً',
-      sens_mid:           'طبيعي',
-      sens_mhigh:         'مرتفع قليلاً',
-      sens_high:          'مرتفع',
-      sens_desc_low:      'منخفض — يتفاعل فقط مع حركات الجفن الكبيرة',
-      sens_desc_mlow:     'منخفض قليلاً — يتفاعل عند إغلاق العينين بإحكام',
-      sens_desc_mid:      'طبيعي — يتفاعل مع الرمش الطبيعي القياسي',
-      sens_desc_mhigh:    'مرتفع قليلاً — يتفاعل حتى مع الرمش السطحي والخفيف',
-      sens_desc_high:     'مرتفع — يتفاعل بمجرد تضييق العينين قليلاً',
-      menu_ear_thresh:    'عتبة EAR',
-      menu_ear_live:      '👁 قيمة EAR في الوقت الفعلي',
-      ear_closed:         '0.10 (إغلاق)',
-      ear_measuring:      '— (يظهر أثناء القياس)',
-      ear_open:           '0.40 (فتح)',
-      menu_other_title:   'إعدادات أخرى',
-      menu_minframe:      'الحد الأدنى لإطارات الكشف',
-      menu_minframe_desc: 'القيم الأقل تكتشف الرمش الأسرع.<br>قم بزيادتها لتقليل الضوضاء والخطأ.',
-      menu_lang_title:    'اللغة (LANGUAGE)',
-      menu_ear_title:     'ما هو EAR؟',
-      menu_ear_body:      'نسبة تفاوت العين (Eye Aspect Ratio).<br>يتم حسابها: ارتفاع العين ÷ عرض العين.<br>تنخفض هذه القيمة بشكل حاد جداً عند الرمش.<br><br>الطبيعي: 0.25 إلى 0.35<br>الإغلاق: 0.10 إلى 0.15',
-      phase_select:       '// اختيار مرحلة القياس',
-      phase_label:        'مرحلة',
-      start_btn:          'بدء',
-      stop_btn:           'إيقاف',
-      bpm_unit:           'رمشة/د',
-      camera_idle:        '// اضغط على زر البدء لتفعيل الكاميرا',
-      cam_disconnected:   'الكاميرا غير متصلة',
-      cam_connecting:     'الكاميرا نشطة — انظر أمامك مباشرة',
-      cam_no_face:        'لم يتم اكتشاف وجه',
-      cam_detecting:      'تم اكتشاف الوجه ✓',
-      btn_finish:         '▶ عرض النتائج',
-      result_badge:       'MEASUREMENT COMPLETE',
-      result_title:       'RESULT',
-      rc_base_label:      'الاستماع (أساس)',
-      rc_g1_label:        'لعبة 1',
-      rc_g2_label:        'لعبة 2',
-      rc_unit:            'رمشة / د',
-      compare_title:      '// مقارنة مع الأساس (الأساس = 100%)',
-      cmp_base:           'الاستماع',
-      cmp_g1:             'لعبة 1',
-      cmp_g2:             'لعبة 2',
-      btn_home:           '🏠 العودة للرئيسية',
-      toast_phase_start:  'بدأت المرحلة {n}',
-      toast_phase_done:   'اكتملت المرحلة {n} — {v} رمشة/د',
-      toast_reset:        'تمت إعادة التعيين — جاهز للجلسة التالية',
-      alert_camera:       'تم رفض الوصول إلى الكاميرا.\nيرجى السماح بالوصول في إعدادات المتصفح.',
-      app_title:          'كاشف الرمش ver2.1',
-    },
-  };
+  // ============================================================
+  //  BLINK STUDY — 瞬き検出紹介アプリ
+  // ============================================================
 
-  let currentLang = 'ja';
+  // ── config ──────────────────────────────────────────────────
+  let cfg = { earThreshold: 0.25, minFrames: 2 };
 
-  function t(key) {
-    return (LANGS[currentLang] && LANGS[currentLang][key]) || (LANGS['ja'][key]) || key;
-  }
-
-  function applyLang() {
-    const lang = currentLang;
-    const L = LANGS[lang];
-    const isRtl = lang === 'ar';
-    
-    document.documentElement.lang = lang;
-    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
-
-    // data-i18n 一括更新
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.dataset.i18n;
-      if (!L[key]) return;
-      
-      const valSpan = el.querySelector('span.val');
-      if (valSpan) {
-        el.childNodes.forEach(n => {
-          if (n.nodeType === 3) n.textContent = L[key] + ' ';
-        });
-      } else {
-        el.innerHTML = L[key];
-      }
-    });
-
-    // 動的テキスト・固有要素の置換
-    $('app-title-label').textContent = L.app_title;
-    $('btn-finish').textContent = L.btn_finish;
-    $('btn-home').textContent = L.btn_home;
-    $('measure-section-title').textContent = L.phase_select;
-
-    // ボタンラベルの文言を最新ステータスに合わせて調整
-    for (let i = 0; i < 3; i++) {
-      $(`phase-lbl-${i+1}`).textContent = L.phase_label + ' ' + (i+1);
-      if (currentMeasuring === i) {
-        $(`label-${i+1}`).textContent = L.stop_btn;
-      } else if (phases[i].bpm !== null) {
-        $(`label-${i+1}`).textContent = ''; // 計測完了時は空（数値のみ出すため）
-      } else {
-        $(`label-${i+1}`).textContent = L.start_btn + (i+1);
-      }
-      $(`unit-${i+1}`).textContent = L.bpm_unit;
-    }
-
-    // カメラ状態表示
-    const camStatusTxt = $('cam-status').textContent;
-    if (camStatusTxt === LANGS['ja'].cam_disconnected || camStatusTxt === L.cam_disconnected) {
-      $('cam-status').textContent = L.cam_disconnected;
-    } else if (camStatusTxt === LANGS['ja'].cam_connecting || camStatusTxt === L.cam_connecting) {
-      $('cam-status').textContent = L.cam_connecting;
-    } else if (camStatusTxt === LANGS['ja'].cam_no_face || camStatusTxt === L.cam_no_face) {
-      $('cam-status').textContent = L.cam_no_face;
-    } else {
-      $('cam-status').textContent = L.cam_detecting;
-    }
-
-    const idleP = document.querySelector('.camera-idle p');
-    if (idleP && !cameraRunning) idleP.textContent = L.camera_idle;
-
-    // リアルタイムモニター
-    if (!cameraRunning) $('ear-live-val').textContent = L.ear_measuring;
-
-    // 結果画面
-    $('result-badge').textContent = L.result_badge;
-    $('rc-lbl-base').textContent = L.rc_base_label;
-    $('rc-lbl-g1').textContent = L.rc_g1_label;
-    $('rc-lbl-g2').textContent = L.rc_g2_label;
-    $('rc-unit-1').textContent = L.rc_unit;
-    $('rc-unit-2').textContent = L.rc_unit;
-    $('rc-unit-3').textContent = L.rc_unit;
-    $('compare-title').textContent = L.compare_title;
-    $('cmp-lbl-base').textContent = L.cmp_base;
-    $('cmp-lbl-g1').textContent = L.cmp_g1;
-    $('cmp-lbl-g2').textContent = L.cmp_g2;
-  }
-
-  // ══════════════════════════════════════════════════════════════
-  //  CONFIG & PRESETS
-  // ══════════════════════════════════════════════════════════════
-  let cfg = { earThreshold: 0.20, minFrames: 2 };
-
-  const SENS_PRESETS = [
-    { ear: 0.13, descKey: 'sens_desc_low' },
-    { ear: 0.17, descKey: 'sens_desc_mlow' },
-    { ear: 0.20, descKey: 'sens_desc_mid' },
-    { ear: 0.24, descKey: 'sens_desc_mhigh' },
-    { ear: 0.28, descKey: 'sens_desc_high' }
-  ];
-
+  // ── state ───────────────────────────────────────────────────
   const phases = [
-    { name: '説明中', blinkCount: 0, startTime: null, endTime: null, bpm: null },
-    { name: 'ゲーム1', blinkCount: 0, startTime: null, endTime: null, bpm: null },
-    { name: 'ゲーム2', blinkCount: 0, startTime: null, endTime: null, bpm: null },
+    { name: 'フェーズ1', blinkCount: 0, startTime: null, endTime: null, bpm: null, blinkTimes: [] },
+    { name: 'フェーズ2', blinkCount: 0, startTime: null, endTime: null, bpm: null, blinkTimes: [] },
+    { name: 'フェーズ3', blinkCount: 0, startTime: null, endTime: null, bpm: null, blinkTimes: [] },
   ];
-
-  let currentMeasuring = null;
+  let currentMeasuring = null; // 0,1,2 or null
   let blinkFrames = 0;
   let isEyeClosed = false;
   let faceMesh = null, camera = null, cameraRunning = false;
+  let mediaStream = null; // 一度許可されたカメラストリームを使い回し、許可ダイアログの再表示を防ぐ
   let timerIntervals = [null, null, null];
 
+  // ── DOM refs ─────────────────────────────────────────────────
   const $ = id => document.getElementById(id);
-  const video = $('video');
+  const video   = $('video');
   const overlay = $('overlay');
-  const ctx = overlay.getContext('2d');
+  const ctx     = overlay.getContext('2d');
 
-  // ── MENU INTERACTION ──
-  $('menu-btn').addEventListener('click', () => {
-    $('menu-btn').classList.toggle('open');
-    $('menu-panel').classList.toggle('open');
-    $('menu-overlay').classList.toggle('show');
-  });
-  $('menu-overlay').addEventListener('click', () => {
-    $('menu-btn').classList.remove('open');
-    $('menu-panel').classList.remove('open');
-    $('menu-overlay').classList.remove('show');
-  });
-
-  // ── EAR PRESETS SELECTION ──
-  document.querySelectorAll('.sens-btn').forEach((btn, i) => {
-    btn.addEventListener('click', () => {
-      cfg.earThreshold = SENS_PRESETS[i].ear;
-      $('ear-slider').value        = cfg.earThreshold;
-      $('ear-val-txt').textContent = cfg.earThreshold.toFixed(2);
-      $('sens-desc').textContent   = t(SENS_PRESETS[i].descKey);
-      document.querySelectorAll('.sens-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-
-  $('ear-slider').addEventListener('input', e => {
-    cfg.earThreshold = +e.target.value;
-    $('ear-val-txt').textContent = cfg.earThreshold.toFixed(2);
-    let bestIdx = 0, bestDist = Infinity;
-    SENS_PRESETS.forEach((p,i) => {
-      const d = Math.abs(p.ear - cfg.earThreshold);
-      if (d < bestDist) { bestDist=d; bestIdx=i; }
-    });
-    document.querySelectorAll('.sens-btn').forEach((b,i) => b.classList.toggle('active', i===bestIdx));
-    $('sens-desc').textContent = t(SENS_PRESETS[bestIdx].descKey);
-  });
-
-  $('minframe-slider').addEventListener('input', e => {
-    cfg.minFrames = +e.target.value;
-    $('minframe-val').textContent = cfg.minFrames;
-  });
-
-  $('lang-select').addEventListener('change', e => {
-    currentLang = e.target.value;
-    applyLang();
-  });
-
-  // ── EAR CALCULATION ──
+  // ── EAR計算 ──────────────────────────────────────────────────
   function dist(a, b) { return Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2); }
   function ear6(lm, t, b, l, r, t2, b2) {
     return (dist(lm[t],lm[b]) + dist(lm[t2],lm[b2])) / (2 * dist(lm[l],lm[r]));
@@ -1314,88 +710,116 @@
     return (ear6(lm,159,145,33,133,160,144) + ear6(lm,386,374,362,263,387,373)) / 2;
   }
 
-  // ── FACEMESH CAMERA CONTROL ──
+  // ── FaceMesh 初期化 ──────────────────────────────────────────
   async function startCamera() {
     if (cameraRunning) return;
+    $('btn-camera-start').disabled = true;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'}});
-      video.srcObject = stream;
+      // すでに許可済みのストリームがあれば使い回し、再度の許可ダイアログを避ける
+      if (!mediaStream || !mediaStream.active) {
+        mediaStream = await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'}});
+      }
+      video.srcObject = mediaStream;
       await video.play();
       video.style.display = 'block';
       $('camera-idle').style.display = 'none';
 
       faceMesh = new FaceMesh({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
-      faceMesh.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
-      faceMesh.onResults(onResults);
+      faceMesh.setOptions({maxNumFaces:1, refineLandmarks:true, minDetectionConfidence:.5, minTrackingConfidence:.5});
+      faceMesh.onResults(onFaceResult);
 
       camera = new Camera(video, {
-        onFrame: async () => { if (cameraRunning) await faceMesh.send({image: video}); },
+        onFrame: async () => { await faceMesh.send({image: video}); },
         width: 640, height: 480
       });
-      cameraRunning = true;
-      document.body.classList.add('cam-on');
-      $('cam-dot').className = 'cam-dot warn';
-      $('cam-status').textContent = t('cam_connecting');
-
       await camera.start();
-    } catch (err) {
-      console.error(err);
-      alert(t('alert_camera'));
+
+      cameraRunning = true;
+      $('cam-dot').className = 'cam-dot ok';
+      $('cam-status').textContent = 'カメラ接続中 — 顔を正面に向けてください';
+      document.body.classList.add('cam-on');
+
+      // カメラが起動したので計測ボタンを有効化（完了済みは除く）
+      btns.forEach(b => { if (!b.classList.contains('done')) b.disabled = false; });
+      toast('カメラ起動完了 — 準備ができたらフェーズを選んで計測開始');
+    } catch(err) {
+      alert('カメラへのアクセスが拒否されました。\nブラウザの設定でカメラ許可を有効にしてください。');
+      $('btn-camera-start').disabled = false;
     }
   }
 
-  function onResults(results) {
-    if (!cameraRunning) return;
-    
-    ctx.clearRect(0,0,overlay.width,overlay.height);
-    if(overlay.width !== video.videoWidth) {
-      overlay.width = video.videoWidth;
-      overlay.height = video.videoHeight;
-    }
+  // ── 目の位置（顔検出）を再検出する ──────────────────────────
+  async function resetEyeTracking() {
+    if (!cameraRunning) { toast('先にカメラを起動してください'); return; }
+    blinkFrames = 0; isEyeClosed = false;
+    try {
+      if (camera)   { camera.stop();    camera = null; }
+      if (faceMesh) { faceMesh.close(); faceMesh = null; }
 
-    if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
+      faceMesh = new FaceMesh({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
+      faceMesh.setOptions({maxNumFaces:1, refineLandmarks:true, minDetectionConfidence:.5, minTrackingConfidence:.5});
+      faceMesh.onResults(onFaceResult);
+
+      camera = new Camera(video, {
+        onFrame: async () => { await faceMesh.send({image: video}); },
+        width: 640, height: 480
+      });
+      await camera.start();
+
+      toast('目の位置を再検出しました');
+    } catch(err) {
+      toast('再検出に失敗しました — もう一度お試しください');
+    }
+  }
+
+  // ── FaceMesh結果処理 ─────────────────────────────────────────
+  function onFaceResult(results) {
+    const w = overlay.width  = video.videoWidth  || 640;
+    const h = overlay.height = video.videoHeight || 480;
+    ctx.clearRect(0, 0, w, h);
+
+    if (!results.multiFaceLandmarks?.length) {
       $('cam-dot').className = 'cam-dot warn';
-      $('cam-status').textContent = t('cam_no_face');
-      $('ear-bar').style.width = '0%';
-      if (currentMeasuring !== null) $('ear-live-val').textContent = '0.00';
+      $('cam-status').textContent = '顔が検出されていません';
+      $('ear-live-val').textContent = '—';
       return;
     }
-
     $('cam-dot').className = 'cam-dot ok';
-    $('cam-status').textContent = t('cam_detecting');
+    $('cam-status').textContent = '顔を検出中 ✓';
 
-    const lm = results.multiFaceLandmarks[0];
+    const lm  = results.multiFaceLandmarks[0];
     const ear = getEAR(lm);
 
-    // リアルタイム表示用
-    const clampedEar = Math.max(0.10, Math.min(0.40, ear));
-    const pct = ((clampedEar - 0.10) / 0.30) * 100;
-    $('ear-bar').style.width = pct + '%';
-    if (currentMeasuring !== null) {
-      $('ear-live-val').textContent = ear.toFixed(2);
-    }
+    // EARバー更新（メニュー用）
+    const earPct = Math.min(Math.max((ear - 0.10) / 0.30 * 100, 0), 100);
+    $('ear-bar').style.width = earPct + '%';
+    $('ear-bar').style.background = ear < cfg.earThreshold ? 'var(--danger)' : 'var(--ok)';
+    $('ear-live-val').textContent = ear.toFixed(3);
 
-    // 描画
-    ctx.fillStyle = ear < cfg.earThreshold ? 'rgba(255,45,85,.6)' : 'rgba(0,240,255,.4)';
-    [33,133,159,145,160,144,362,263,386,374,387,373].forEach(idx => {
-      const pt = lm[idx];
-      ctx.beginPath();
-      ctx.arc(pt.x * overlay.width, pt.y * overlay.height, 2, 0, 2*Math.PI);
-      ctx.fill();
+    // 目のランドマーク描画
+    [[159,145,33,133,160,144],[386,374,362,263,387,373]].forEach(idx => {
+      idx.forEach(i => {
+        ctx.beginPath();
+        ctx.arc(lm[i].x*w, lm[i].y*h, 3, 0, Math.PI*2);
+        ctx.fillStyle = ear < cfg.earThreshold ? 'rgba(255,45,85,.8)' : 'rgba(0,240,255,.7)';
+        ctx.fill();
+      });
     });
 
-    // 瞬き判定
+    // 瞬き検出
     if (ear < cfg.earThreshold) {
       blinkFrames++;
       isEyeClosed = true;
     } else {
       if (isEyeClosed && blinkFrames >= cfg.minFrames) {
+        // 瞬き確定
         if (currentMeasuring !== null) {
-          phases[currentMeasuring].blinkCount++;
-          // フラッシュ演出
-          const flash = $('blink-flash');
-          flash.style.opacity = '1';
-          setTimeout(() => flash.style.opacity = '0', 60);
+          const ph = phases[currentMeasuring];
+          ph.blinkCount++;
+          // 開始ボタンを押してからの経過秒数（ミリ秒まで）を記録
+          const elapsedSec = Number(((Date.now() - ph.startTime) / 1000).toFixed(3));
+          ph.blinkTimes.push(elapsedSec);
+          // フラッシュ演出なし
         }
       }
       blinkFrames = 0;
@@ -1403,238 +827,387 @@
     }
   }
 
-  // ── MEASUREMENT LOGIC ──
-  const btns = [ $('meas-btn-1'), $('meas-btn-2'), $('meas-btn-3') ];
+  // ── 計測ボタン制御 ───────────────────────────────────────────
+  const btns = [
+    $('meas-btn-1'), $('meas-btn-2'), $('meas-btn-3')
+  ];
 
   function updateFinishBtn() {
+    // フェーズ1とフェーズ2が完了していれば押せる
+    // フェーズ3は任意
     const phase1done = phases[0].bpm !== null;
     const phase2done = phases[1].bpm !== null;
     $('btn-finish').disabled = !(phase1done && phase2done);
   }
 
   btns.forEach((btn, idx) => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', () => {
       if (btn.disabled || btn.classList.contains('done')) return;
+
       if (currentMeasuring === idx) {
+        // ── 計測終了 ──
         stopMeasure(idx);
       } else {
-        if (!cameraRunning) await startCamera();
+        // ── 計測開始 ──
+        if (!cameraRunning) {
+          toast('先にカメラを起動してください');
+          return;
+        }
         startMeasure(idx);
       }
     });
   });
 
+  // ── カメラ起動ボタン ─────────────────────────────────────────
+  $('btn-camera-start').addEventListener('click', startCamera);
+
+  // ── 目の位置リセットボタン ───────────────────────────────────
+  $('btn-eye-reset').addEventListener('click', resetEyeTracking);
+
+  // ── キーボードショートカット（1,2,3キーでフェーズ計測ボタン）──
+  document.addEventListener('keydown', (e) => {
+    if (e.repeat) return;
+    const activeTag = document.activeElement && document.activeElement.tagName;
+    if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
+    if (['1','2','3'].includes(e.key)) {
+      const idx = Number(e.key) - 1;
+      const btn = btns[idx];
+      if (btn && !btn.disabled) btn.click();
+    }
+  });
+
   function startMeasure(idx) {
     currentMeasuring = idx;
-    blinkFrames = 0;
-    isEyeClosed = false;
+    blinkFrames = 0; isEyeClosed = false;
     phases[idx].blinkCount = 0;
-    phases[idx].startTime = Date.now();
-    phases[idx].endTime = null;
-    phases[idx].bpm = null;
+    phases[idx].startTime  = Date.now();
+    phases[idx].endTime    = null;
+    phases[idx].bpm        = null;
+    phases[idx].blinkTimes = [];
 
+    // ボタン状態更新
     btns[idx].classList.add('measuring');
-    $(`label-${idx+1}`).textContent = t('stop_btn');
-    $(`label-${idx+1}`).style.display = 'block';
-    $(`result-${idx+1}`).style.display = 'none';
-    $(`unit-${idx+1}`).style.display = 'none';
+    $(`label-${idx+1}`).textContent = '計測終了';
 
+    // 他のボタンと結果ボタンを無効化
     btns.forEach((b, i) => { if (i !== idx) b.disabled = true; });
     $('btn-finish').disabled = true;
 
-    // トースト通知
-    toast(t('toast_phase_start').replace('{n}', idx + 1));
-
+    // タイマー表示
     timerIntervals[idx] = setInterval(() => {
       const elapsed = Math.floor((Date.now() - phases[idx].startTime) / 1000);
-      const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
-      const s = String(elapsed % 60).padStart(2, '0');
+      const m = String(Math.floor(elapsed/60)).padStart(2,'0');
+      const s = String(elapsed%60).padStart(2,'0');
       $(`timer-${idx+1}`).textContent = `${m}:${s}`;
-    }, 250);
+    }, 500);
+
+    toast(`フェーズ ${idx+1} 計測開始`);
   }
 
   function stopMeasure(idx) {
     clearInterval(timerIntervals[idx]);
-    timerIntervals[idx] = null;
-
-    const p = phases[idx];
-    p.endTime = Date.now();
-    const durationSec = (p.endTime - p.startTime) / 1000;
-    
-    // 分換算値を計算（最低でも1回分相当として丸めを回避）
-    p.bpm = durationSec > 0 ? Math.round((p.blinkCount / durationSec) * 60) : 0;
-
-    btns[idx].classList.remove('measuring');
-    btns[idx].classList.add('done');
-    
-    $(`label-${idx+1}`).style.display = 'none';
-    $(`result-${idx+1}`).textContent = p.bpm;
-    $(`result-${idx+1}`).style.display = 'block';
-    $(`unit-${idx+1}`).textContent = t('bpm_unit');
-    $(`unit-${idx+1}`).style.display = 'block';
-
     currentMeasuring = null;
-    btns.forEach(b => b.disabled = false);
-    
-    toast(t('toast_phase_done').replace('{n}', idx + 1).replace('{v}', p.bpm));
+
+    const phase = phases[idx];
+    phase.endTime = Date.now();
+    const elapsedMin = (phase.endTime - phase.startTime) / 60000;
+    phase.bpm = elapsedMin > 0 ? phase.blinkCount / elapsedMin : 0;
+
+    // ボタンを「完了」状態に
+    const btn = btns[idx];
+    btn.classList.remove('measuring');
+    btn.classList.add('done');
+
+    // ラベルを結果表示に
+    $(`label-${idx+1}`).style.display = 'none';
+    const rv = $(`result-${idx+1}`);
+    const ru = $(`unit-${idx+1}`);
+    rv.textContent = phase.bpm.toFixed(1);
+    rv.style.display = 'block';
+    ru.style.display = 'block';
+
+    // 他のボタンを再有効化
+    btns.forEach((b, i) => { if (!phases[i].bpm && i !== idx) b.disabled = false; });
+
     updateFinishBtn();
+    toast(`フェーズ ${idx+1} 完了 — ${phase.bpm.toFixed(1)} 回/分`);
   }
 
-  // ── TOAST DISPLAYER ──
-  let toastTimer = null;
-  function toast(msg) {
-    clearTimeout(toastTimer);
-    const box = $('toast');
-    box.textContent = msg;
-    box.classList.add('show');
-    toastTimer = setTimeout(() => box.classList.remove('show'), 3000);
+  // ── 結果画面 ─────────────────────────────────────────────────
+  $('btn-finish').addEventListener('click', showResult);
+
+  // 基準（フェーズ1）に対する割合からフィードバックの階層を判定
+  function getFeedbackTier(pct) {
+    if (pct < 70)  return { cls: 'tier-low',  msg: 'だいぶ少ないから気をつけて' };
+    if (pct <= 90) return { cls: 'tier-mid',  msg: 'ちょっと瞬き減ってる' };
+    if (pct <= 99) return { cls: 'tier-good', msg: 'いいかんじ' };
+    return { cls: 'tier-high', msg: '瞬き増えてる' };
   }
 
-  // ── SHOW RESULTS SCREEN ──
-  $('btn-finish').addEventListener('click', showResults);
-
-  function showResults() {
+  function showResult() {
     const base = phases[0].bpm;
     const g1   = phases[1].bpm;
     const g2   = phases[2].bpm;
 
-    $('rv-base').textContent = base;
-    $('rv-g1').textContent   = g1;
-    $('rv-g2').textContent   = g2 !== null ? g2 : '—';
+    $('rv-base').textContent = base !== null ? base.toFixed(1) : '—';
+    $('rv-g1').textContent   = g1   !== null ? g1.toFixed(1)   : '—';
+    $('rv-g2').textContent   = g2   !== null ? g2.toFixed(1)   : '—';
 
-    const maxBpm = Math.max(base, g1, g2 || 0, 1);
-    const basePct = (base / maxBpm) * 100;
-    const g1Pct   = g1 !== null ? (g1 / maxBpm) * 100 : 0;
-    const g2Pct   = g2 !== null ? (g2 / maxBpm) * 100 : 0;
-
+    // 比較パーセント計算（フェーズ1を基準 = 100%）
     const g1Ratio = base > 0 && g1 !== null ? Math.round((g1 / base) * 100) : null;
     const g2Ratio = base > 0 && g2 !== null ? Math.round((g2 / base) * 100) : null;
 
+    // 結果画面表示
     const rs = $('result-screen');
     rs.classList.add('show');
     startParticles();
 
+    // カードアニメーション（遅延）
     setTimeout(() => { $('rc-base').classList.add('reveal'); }, 100);
     setTimeout(() => { $('rc-g1').classList.add('reveal'); }, 250);
     setTimeout(() => { $('rc-g2').classList.add('reveal'); }, 400);
 
+    // フィードバック表示（さらに遅延）
     setTimeout(() => {
       $('compare-section').classList.add('reveal');
       setTimeout(() => {
-        $('cbar-base').style.width = basePct + '%';
-        $('cpct-base').textContent = '100%';
-        
         if (g1Ratio !== null) {
-          $('cbar-g1').style.width = g1Pct + '%';
-          $('cpct-g1').textContent = g1Ratio + '%';
-          $('cpct-g1').className = 'compare-pct ' + (g1Ratio < 80 ? 'down' : g1Ratio > 120 ? 'up' : 'neutral');
+          const tier = getFeedbackTier(g1Ratio);
+          $('fb-pct-g1').textContent = g1Ratio + '%';
+          $('fb-pct-g1').className = 'feedback-pct ' + tier.cls;
+          $('fb-msg-g1').textContent = tier.msg;
+          $('fb-msg-g1').className = 'feedback-msg ' + tier.cls;
+        } else {
+          $('fb-pct-g1').textContent = '—';
+          $('fb-pct-g1').className = 'feedback-pct tier-neutral';
+          $('fb-msg-g1').textContent = '未計測';
+          $('fb-msg-g1').className = 'feedback-msg tier-neutral';
         }
         if (g2Ratio !== null) {
-          $('cbar-g2').style.width = g2Pct + '%';
-          $('cpct-g2').textContent = g2Ratio + '%';
-          $('cpct-g2').className = 'compare-pct ' + (g2Ratio < 80 ? 'down' : g2Ratio > 120 ? 'up' : 'neutral');
+          const tier = getFeedbackTier(g2Ratio);
+          $('fb-pct-g2').textContent = g2Ratio + '%';
+          $('fb-pct-g2').className = 'feedback-pct ' + tier.cls;
+          $('fb-msg-g2').textContent = tier.msg;
+          $('fb-msg-g2').className = 'feedback-msg ' + tier.cls;
         } else {
-          $('cbar-g2').style.width = '0%';
-          $('cpct-g2').textContent = '—';
-          $('cpct-g2').className = 'compare-pct neutral';
+          $('fb-pct-g2').textContent = '—';
+          $('fb-pct-g2').className = 'feedback-pct tier-neutral';
+          $('fb-msg-g2').textContent = '未計測';
+          $('fb-msg-g2').className = 'feedback-msg tier-neutral';
         }
       }, 200);
     }, 600);
 
+    // ホームボタン
     setTimeout(() => { $('btn-home').classList.add('reveal'); }, 900);
   }
 
-  // ── RESET AND RETURN HOME ──
+  // ── ホームに戻る ─────────────────────────────────────────────
   $('btn-home').addEventListener('click', () => {
-    $('result-screen').classList.remove('show');
-    $('rc-base').classList.remove('reveal');
-    $('rc-g1').classList.remove('reveal');
-    $('rc-g2').classList.remove('reveal');
-    $('compare-section').classList.remove('reveal');
-    $('btn-home').classList.remove('reveal');
+    // ファイル名用に現在時刻を取得
+    const now = new Date();
+    const mm  = String(now.getMonth() + 1).padStart(2, '0');
+    const dd  = String(now.getDate()).padStart(2, '0');
+    const hh  = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const filename = `mabataki_data_${mm}_${dd}_${hh}_${min}.json`;
+
+    // データをJSONでダウンロード保存
+    const data = {
+      savedAt: now.toISOString(),
+      phases: phases.map((p, i) => ({
+        phase: `フェーズ${i + 1}`,
+        blinkCount: p.blinkCount,
+        durationSec: p.startTime && p.endTime ? Number(((p.endTime - p.startTime)/1000).toFixed(3)) : null,
+        blinksPerMinute: p.bpm !== null ? Number(p.bpm.toFixed(2)) : null,
+        // 開始ボタンを押してから何秒後に瞬きしたか（ミリ秒まで）を縦に連続表示
+        blinkTimestampsSec: p.blinkTimes,
+      })),
+      comparison: {
+        phase2_vs_phase1_pct: phases[0].bpm > 0 && phases[1].bpm !== null ? Math.round((phases[1].bpm / phases[0].bpm) * 100) : null,
+        phase3_vs_phase1_pct: phases[0].bpm > 0 && phases[2].bpm !== null ? Math.round((phases[2].bpm / phases[0].bpm) * 100) : null,
+      }
+    };
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}));
+    a.download = filename;
+    a.click();
+
+    // リセット
+    resetAll();
+  });
+
+  function resetAll() {
+    // パーティクル停止
     stopParticles();
 
-    // データの完全リセット
-    phases.forEach(p => { p.blinkCount = 0; p.startTime = null; p.endTime = null; p.bpm = null; });
-    currentMeasuring = null;
-    blinkFrames = 0;
-    isEyeClosed = false;
-    timerIntervals.forEach((t, i) => { clearInterval(t); timerIntervals[i] = null; });
+    // 結果画面非表示
+    const rs = $('result-screen');
+    rs.classList.remove('show');
+    ['rc-base','rc-g1','rc-g2','compare-section'].forEach(id => $( id).classList.remove('reveal'));
+    $('btn-home').classList.remove('reveal');
 
+    // フェーズリセット
+    phases.forEach(p => { p.blinkCount=0; p.startTime=null; p.endTime=null; p.bpm=null; p.blinkTimes=[]; });
+    currentMeasuring = null; blinkFrames = 0; isEyeClosed = false;
+    timerIntervals.forEach((t,i) => { clearInterval(t); timerIntervals[i]=null; });
+
+    // ボタンリセット
     btns.forEach((btn, i) => {
-      btn.disabled = false;
+      btn.disabled = true;
       btn.className = 'meas-btn';
+      $(`label-${i+1}`).textContent = `開始${i+1}`;
       $(`label-${i+1}`).style.display = 'block';
       $(`result-${i+1}`).style.display = 'none';
-      $(`unit-${i+1}`).style.display = 'none';
+      $(`unit-${i+1}`).style.display   = 'none';
       $(`timer-${i+1}`).textContent = '00:00';
     });
-
     $('btn-finish').disabled = true;
 
-    // カメラの停止とクリーンアップ
-    if (camera) { camera.stop(); camera = null; }
+    // 顔検出のみ停止（カメラの許可・映像ストリームは維持し、再度の許可ダイアログを避ける）
+    if (camera)   { camera.stop();    camera = null; }
     if (faceMesh) { faceMesh.close(); faceMesh = null; }
-    const s = video.srcObject;
-    if (s) s.getTracks().forEach(t => t.stop());
-    video.srcObject = null;
+    video.pause();
     video.style.display = 'none';
     cameraRunning = false;
-    
-    document.body.classList.remove('cam-on');
+
     $('camera-idle').style.display = 'flex';
+    $('btn-camera-start').disabled = false;
     $('cam-dot').className = 'cam-dot';
-    
-    applyLang(); // 各種テキストの初期表示状態に引き戻す
-    toast(t('toast_reset'));
-  });
+    $('cam-status').textContent = 'カメラ未接続';
+    document.body.classList.remove('cam-on');
+    $('ear-live-val').textContent = '— (計測中に表示)';
 
-  // ── PARTICLE EFFECT ON RESULTS SCREEN ──
-  const pCanvas = $('particle-canvas');
-  const pCtx = pCanvas.getContext('2d');
-  let pParticles = [], pAnimationId = null;
-
-  class Particle {
-    constructor() { this.reset(); this.y = Math.random() * pCanvas.height; }
-    reset() {
-      this.x = Math.random() * pCanvas.width;
-      this.y = pCanvas.height + 10;
-      this.size = Math.random() * 2 + 1;
-      this.speedY = Math.random() * 0.8 + 0.4;
-      this.alpha = Math.random() * 0.5 + 0.2;
-    }
-    update() { this.y -= this.speedY; if (this.y < -10) this.reset(); }
-    draw() {
-      pCtx.fillStyle = `rgba(0, 240, 255, ${this.alpha})`;
-      pCtx.beginPath(); pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); pCtx.fill();
-    }
+    toast('リセット完了 — 次の計測を始めてください');
   }
+
+  // ── パーティクルエフェクト ────────────────────────────────────
+  const pCanvas = $('particle-canvas');
+  const pCtx    = pCanvas.getContext('2d');
+  let particles = [], rafId = null;
 
   function startParticles() {
-    pCanvas.classList.add('show');
-    pCanvas.width = window.innerWidth;
+    pCanvas.width  = window.innerWidth;
     pCanvas.height = window.innerHeight;
-    pParticles = Array.from({length: 40}, () => new Particle());
-    loopParticles();
+    pCanvas.classList.add('show');
+    particles = [];
+    for (let i = 0; i < 80; i++) spawnParticle();
+    animateParticles();
   }
-  function loopParticles() {
-    pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-    pParticles.forEach(p => { p.update(); p.draw(); });
-    pAnimationId = requestAnimationFrame(loopParticles);
-  }
+
   function stopParticles() {
     pCanvas.classList.remove('show');
-    cancelAnimationFrame(pAnimationId);
+    cancelAnimationFrame(rafId);
+    particles = [];
     pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
   }
-  window.addEventListener('resize', () => {
-    if (pCanvas.classList.contains('show')) {
-      pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight;
-    }
+
+  function spawnParticle() {
+    const colors = ['#00f0ff','#7b2fff','#ffd060','#00e676','#ff2d55'];
+    particles.push({
+      x: Math.random() * pCanvas.width,
+      y: pCanvas.height + Math.random() * 100,
+      vx: (Math.random()-0.5)*2,
+      vy: -(Math.random()*3+1),
+      r: Math.random()*4+2,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      alpha: 1, life: Math.random()*180+60,
+      rot: Math.random()*Math.PI*2,
+      rotV: (Math.random()-0.5)*0.1,
+      shape: Math.random() > 0.5 ? 'circle' : 'rect',
+    });
+  }
+
+  function animateParticles() {
+    pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+    particles = particles.filter(p => p.alpha > 0);
+    while (particles.length < 80) spawnParticle();
+
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      p.life--; p.alpha = Math.max(0, p.life / 240);
+      p.rot += p.rotV;
+      pCtx.save();
+      pCtx.globalAlpha = p.alpha;
+      pCtx.fillStyle = p.color;
+      pCtx.translate(p.x, p.y);
+      pCtx.rotate(p.rot);
+      if (p.shape === 'circle') {
+        pCtx.beginPath(); pCtx.arc(0,0,p.r,0,Math.PI*2); pCtx.fill();
+      } else {
+        pCtx.fillRect(-p.r,-p.r,p.r*2,p.r*2);
+      }
+      pCtx.restore();
+    });
+    rafId = requestAnimationFrame(animateParticles);
+  }
+
+  // ── メニュー制御 ─────────────────────────────────────────────
+  const menuBtn     = $('menu-btn');
+  const menuPanel   = $('menu-panel');
+  const menuOverlay = $('menu-overlay');
+
+  function openMenu() {
+    menuBtn.classList.add('open');
+    menuPanel.classList.add('open');
+    menuOverlay.classList.add('show');
+  }
+  function closeMenu() {
+    menuBtn.classList.remove('open');
+    menuPanel.classList.remove('open');
+    menuOverlay.classList.remove('show');
+  }
+  menuBtn.addEventListener('click', () => {
+    menuPanel.classList.contains('open') ? closeMenu() : openMenu();
+  });
+  menuOverlay.addEventListener('click', closeMenu);
+
+  // ── 感度ボタン ───────────────────────────────────────────────
+  const SENS_PRESETS = [
+    {ear:0.13, desc:'低め — まぶたが大きく動いたときだけ反応します'},
+    {ear:0.17, desc:'やや低め — しっかり目を閉じると反応します'},
+    {ear:0.20, desc:'標準 — 通常の瞬きで反応します'},
+    {ear:0.24, desc:'やや高め — 浅い瞬きでも反応しやすくなります'},
+    {ear:0.30, desc:'高め — 少し目を細めるだけで反応します'},
+  ];
+
+  document.querySelectorAll('.sens-btn').forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      cfg.earThreshold = SENS_PRESETS[i].ear;
+      $('ear-slider').value    = cfg.earThreshold;
+      $('ear-val-txt').textContent = cfg.earThreshold.toFixed(2);
+      $('sens-desc').textContent   = SENS_PRESETS[i].desc;
+      document.querySelectorAll('.sens-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
   });
 
-  // 初回適用
-  applyLang();
+  $('ear-slider').addEventListener('input', e => {
+    cfg.earThreshold = +e.target.value;
+    $('ear-val-txt').textContent = cfg.earThreshold.toFixed(2);
+    // 最近傍ボタンをアクティブに
+    let bestIdx = 0, bestDist = Infinity;
+    SENS_PRESETS.forEach((p,i) => {
+      const d = Math.abs(p.ear - cfg.earThreshold);
+      if (d < bestDist) { bestDist=d; bestIdx=i; }
+    });
+    document.querySelectorAll('.sens-btn').forEach((b,i) => b.classList.toggle('active', i===bestIdx));
+    $('sens-desc').textContent = SENS_PRESETS[bestIdx].desc;
+  });
+
+  $('minframe-slider').addEventListener('input', e => {
+    cfg.minFrames = +e.target.value;
+    $('minframe-val').textContent = cfg.minFrames;
+  });
+
+  // ── toast ────────────────────────────────────────────────────
+  let toastTimer = null;
+  function toast(msg) {
+    const el = $('toast');
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+  }
   </script>
 </body>
 </html>

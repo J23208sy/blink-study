@@ -938,10 +938,10 @@
 
   // 基準（フェーズ1）に対する割合からフィードバックの階層を判定
   function getFeedbackTier(pct) {
-    if (pct < 70)  return { cls: 'tier-low',  msg: 'だいぶ少ないから気をつけて' };
-    if (pct <= 90) return { cls: 'tier-mid',  msg: 'ちょっと瞬き減ってる' };
-    if (pct <= 99) return { cls: 'tier-good', msg: 'いいかんじ' };
-    return { cls: 'tier-high', msg: '瞬き増えてる' };
+    if (pct < 70)  return { cls: 'tier-low',  msg: '瞬きだいぶ少なくなってる...' };
+    if (pct <= 90) return { cls: 'tier-mid',  msg: 'ちょっとだけ瞬き減ったね' };
+    if (pct <= 99) return { cls: 'tier-good', msg: '瞬き回数維持してる！いいかんじ' };
+    return { cls: 'tier-high', msg: '瞬き増えてる！！' };
   }
 
   function showResult() {

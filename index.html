@@ -749,22 +749,20 @@
   }
 
   // ── 目の位置（顔検出）を再検出する ──────────────────────────
+  // 注意: camera(映像取得ループ)は止めない。stop→startすると内部でgetUserMediaが
+  // 再度呼ばれ、ブラウザの許可ダイアログが毎回表示されてしまうため、
+  // FaceMeshインスタンスのみを作り直す。
   async function resetEyeTracking() {
     if (!cameraRunning) { toast('先にカメラを起動してください'); return; }
     blinkFrames = 0; isEyeClosed = false;
     try {
-      if (camera)   { camera.stop();    camera = null; }
       if (faceMesh) { faceMesh.close(); faceMesh = null; }
 
       faceMesh = new FaceMesh({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
       faceMesh.setOptions({maxNumFaces:1, refineLandmarks:true, minDetectionConfidence:.5, minTrackingConfidence:.5});
       faceMesh.onResults(onFaceResult);
-
-      camera = new Camera(video, {
-        onFrame: async () => { await faceMesh.send({image: video}); },
-        width: 640, height: 480
-      });
-      await camera.start();
+      // cameraのonFrameはfaceMesh変数をクロージャ経由で参照しているため、
+      // 上で再代入するだけで次フレームから新しいFaceMeshが使われる
 
       toast('目の位置を再検出しました');
     } catch(err) {
@@ -864,7 +862,7 @@
   // ── 目の位置リセットボタン ───────────────────────────────────
   $('btn-eye-reset').addEventListener('click', resetEyeTracking);
 
-  // ── キーボードショートカット（1,2,3キーでフェーズ計測ボタン）──
+  // ── キーボードショートカット（1,2,3キーでフェーズ計測ボタン／Spaceでカメラリセット／Enterで結果を見る）──
   document.addEventListener('keydown', (e) => {
     if (e.repeat) return;
     const activeTag = document.activeElement && document.activeElement.tagName;
@@ -873,6 +871,13 @@
       const idx = Number(e.key) - 1;
       const btn = btns[idx];
       if (btn && !btn.disabled) btn.click();
+    } else if (e.code === 'Space') {
+      e.preventDefault(); // ページスクロールを防止
+      const eyeResetBtn = $('btn-eye-reset');
+      if (eyeResetBtn && !eyeResetBtn.disabled) eyeResetBtn.click();
+    } else if (e.key === 'Enter') {
+      const finishBtn = $('btn-finish');
+      if (finishBtn && !finishBtn.disabled) finishBtn.click();
     }
   });
 
